@@ -187,7 +187,7 @@
 
     /**
      * Fungsi utama yang dipanggil saat tombol ditekan.
-     * Memilih endpoint yang sesuai berdasarkan mode.
+     * Hanya mengizinkan login; registrasi dinonaktifkan.
      */
     async function handleAction() {
       const username = document.getElementById('user').value.trim();
@@ -208,12 +208,9 @@
         return;
       }
 
-      // Hanya izinkan endpoint login
-      const endpoint = '/login';
-
       try {
-        // Kirim request POST ke server dengan data JSON
-        const res = await fetch(endpoint, {
+        // Kirim request POST ke endpoint login dengan data JSON
+        const res = await fetch('/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
@@ -235,24 +232,9 @@
           return;
         }
 
-        // Jika mode login berhasil, simpan token dan redirect ke dashboard
-        if (mode === 'login') {
-          // Simpan token JWT ke localStorage agar bisa dipakai nanti
-          localStorage.setItem('token', data.token);
-          // Redirect ke dashboard lokal
-          window.location.href = './dashboard.html';
-        } else {
-          // Jika register berhasil, tampilkan pesan sukses dan beralih ke mode login
-          msgEl.className = 'success';
-          msgEl.innerText = 'Registrasi berhasil! Silakan login.';
-          // Reset input
-          document.getElementById('user').value = '';
-          document.getElementById('pass').value = '';
-          // Otomatis beralih ke mode login setelah 1.5 detik
-          setTimeout(() => {
-            if (mode === 'register') toggleMode();
-          }, 1500);
-        }
+        // Login berhasil: simpan token dan redirect ke dashboard
+        localStorage.setItem('token', data.token);
+        window.location.href = './dashboard.html';
       } catch (err) {
         // Tangani error jaringan atau server tidak aktif
         msgEl.className = 'error';
@@ -262,3 +244,4 @@
   </script>
 </body>
 </html>
+
