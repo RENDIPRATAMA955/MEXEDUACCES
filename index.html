@@ -167,10 +167,7 @@
       <!-- Area untuk menampilkan pesan error atau sukses -->
       <p id="msg" class="error"></p>
 
-      <!-- Tombol toggle antara mode Login dan Register -->
-      <p class="toggle" id="toggleBtn" onclick="toggleMode()">
-        Belum punya akun? Register
-      </p>
+      <!-- Register dinonaktifkan -->
     </div>
   </div>
 
@@ -179,23 +176,13 @@
     let mode = 'login';
 
     /**
-     * Fungsi untuk mengganti mode antara Login dan Register.
-     * Mengubah teks judul, tombol, dan link toggle.
+     * Fungsi toggle mode dinonaktifkan.
+     * Register tidak diizinkan.
      */
     function toggleMode() {
-      if (mode === 'login') {
-        mode = 'register';
-        document.getElementById('formTitle').innerText = 'Register';
-        document.getElementById('actionBtn').innerText = 'Register';
-        document.getElementById('toggleBtn').innerText = 'Sudah punya akun? Login';
-      } else {
-        mode = 'login';
-        document.getElementById('formTitle').innerText = 'Login';
-        document.getElementById('actionBtn').innerText = 'Login';
-        document.getElementById('toggleBtn').innerText = 'Belum punya akun? Register';
-      }
-      // Kosongkan pesan saat ganti mode
-      document.getElementById('msg').innerText = '';
+      const msgEl = document.getElementById('msg');
+      msgEl.className = 'error';
+      msgEl.innerText = 'Registrasi akun baru dinonaktifkan.';
     }
 
     /**
@@ -207,6 +194,13 @@
       const password = document.getElementById('pass').value;
       const msgEl = document.getElementById('msg');
 
+      // Blokir jika bukan mode login
+      if (mode !== 'login') {
+        msgEl.className = 'error';
+        msgEl.innerText = 'Registrasi akun baru dinonaktifkan.';
+        return;
+      }
+
       // Validasi sederhana di client-side
       if (!username || !password) {
         msgEl.className = 'error';
@@ -214,8 +208,8 @@
         return;
       }
 
-      // Tentukan endpoint: /login atau /register
-      const endpoint = mode === 'login' ? '/login' : '/register';
+      // Hanya izinkan endpoint login
+      const endpoint = '/login';
 
       try {
         // Kirim request POST ke server dengan data JSON
